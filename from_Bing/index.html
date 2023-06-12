@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eye Exercise</title>
+    <style>
+        :root {
+            --soft-red: #FF7F7F;
+            --soft-green: #7FFF7F;
+            --soft-yellow: #FFFF7F;
+            --soft-blue: #7FBFFF;
+            --charcoal: #333333;
+            --button-width: 80px;
+            --button-height: 30px;
+            --button-margin: 10px;
+            --button-border-radius: 10px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--charcoal);
+        }
+
+        #header {
+            width: 100%;
+            height: 10vh;
+            background-color: var(--charcoal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button {
+            width: var(--button-width);
+            height: var(--button-height);
+            margin: var(--button-margin);
+            border-radius: var(--button-border-radius);
+            background-color: var(--soft-yellow);
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            border: 2px solid white;
+            transition: all 0.3s ease;
+        }
+
+        button:active {
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+            transform: translateY(4px);
+        }
+
+        .active {
+            background-color: var(--soft-blue);
+            box-shadow: inset 0 0 10px #000000;
+        }
+
+        #container {
+            width: 100%;
+            height: 90vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #object {
+            width: 100px;
+            height: 100px;
+            background-color: var(--soft-red);
+            position: absolute;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <button id="slow">Slow</button>
+        <button id="medium">Medium</button>
+        <button id="fast">Fast</button>
+        <button id="random">Random</button>
+    </div>
+    <div id="container">
+        <div id="object"></div>
+    </div>
+    <script>
+        const slowBtn = document.getElementById('slow');
+        const mediumBtn = document.getElementById('medium');
+        const fastBtn = document.getElementById('fast');
+        const randomBtn = document.getElementById('random');
+        const object = document.getElementById('object');
+
+        const speed = { slow: 2000, medium: 1000, fast: 500 };
+        let currentSpeed = speed.slow;
+        const positions = [
+            { top: '10%', left: '10%' },
+            { top: '10%', left: '90%' },
+            { top: '90%', left: '10%' },
+            { top: '90%', left: '90%' },
+        ];
+
+        let currentPositionIndex = 0;
+
+        slowBtn.addEventListener('click', () => {
+            currentSpeed = speed.slow;
+            resetButtons();
+            slowBtn.classList.add('active');
+        });
+
+        mediumBtn.addEventListener('click', () => {
+            currentSpeed = speed.medium;
+            resetButtons();
+            mediumBtn.classList.add('active');
+        });
+
+        fastBtn.addEventListener('click', () => {
+            currentSpeed = speed.fast;
+            resetButtons();
+            fastBtn.classList.add('active');
+        });
+
+        randomBtn.addEventListener('click', () => {
+            currentSpeed = speed[getRandomSpeed()];
+            resetButtons();
+            randomBtn.classList.add('active');
+        });
+
+        function moveObject() {
+            const { top, left } = positions[currentPositionIndex];
+            object.style.top = top;
+            object.style.left = left;
+            currentPositionIndex = (currentPositionIndex + 1) % positions.length;
+            setTimeout(moveObject, currentSpeed);
+        }
+
+        function getRandomSpeed() {
+            const keys = Object.keys(speed);
+            return keys[keys.length * Math.random() << 0];
+        }
+
+        function resetButtons() {
+            slowBtn.classList.remove('active');
+            mediumBtn.classList.remove('active');
+            fastBtn.classList.remove('active');
+            randomBtn.classList.remove('active');
+        }
+
+        moveObject();
+    </script>
+</body>
+
+</html>

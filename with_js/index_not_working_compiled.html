@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eye Exercise</title>
+    <style>
+        :root {
+            --header-height: 50px;
+        }
+
+        button.active {
+            background-color: lightblue;
+            color: white;
+        }
+
+        .header {
+            width: 100%;
+            height: var(--header-height);
+            background-color: #000;
+        }
+
+        .main {
+            width: 100%;
+            height: calc(100vh - var(--header-height));
+            background-color: #fff;
+            position: relative;
+        }
+
+        .ball {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: red;
+            position: absolute;
+            animation: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <button id="slow-btn">Slow</button>
+        <button id="medium-btn">Medium</button>
+        <button id="fast-btn">Fast</button>
+        <button id="random-btn">Random</button>
+    </div>
+    <div class="main">
+        <div class="ball"></div>
+    </div>
+    <script>
+        const slowBtn = document.getElementById('slow-btn');
+        const mediumBtn = document.getElementById('medium-btn');
+        const fastBtn = document.getElementById('fast-btn');
+        const randomBtn = document.getElementById('random-btn');
+        const ball = document.querySelector('.ball');
+
+        const slowSpeed = 8000; // Time in milliseconds
+        const mediumSpeed = 4000;
+        const fastSpeed = 2000;
+
+        const positions = [
+            { top: '0', left: '0' },
+            { top: '0', left: 'calc(100% - 50px)' },
+            { top: 'calc(100% - 50px)', left: '0' },
+            { top: 'calc(100% - 50px)', left: 'calc(100% - 50px)' },
+            { top: '0', left: '0' }
+        ];
+
+        function calculateTime(startPos, endPos, speed) {
+            const distanceX = Math.abs(parseFloat(startPos.left) - parseFloat(endPos.left));
+            const distanceY = Math.abs(parseFloat(startPos.top) - parseFloat(endPos.top));
+            const distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+            return (distance / 100) * speed; // Adjust the factor (100) based on your needs
+        }
+
+        function setPosition(position) {
+            ball.style.top = position.top;
+            ball.style.left = position.left;
+        }
+
+        function moveBall() {
+            const speed = parseFloat(ball.style.animationDuration) || mediumSpeed;
+            let delay = 0;
+
+            for (let i = 0; i < positions.length - 1; i++) {
+                const startPos = positions[i];
+                const endPos = positions[i + 1];
+
+                const time = calculateTime(startPos, endPos, speed);
+
+                setTimeout(() => {
+                    setPosition(endPos);
+                }, delay + time);
+
+                delay += time;
+            }
+        }
+
+        function setActiveButton(button) {
+            // Remove active class from all buttons
+            slowBtn.classList.remove('active');
+            mediumBtn.classList.remove('active');
+            fastBtn.classList.remove('active');
+            randomBtn.classList.remove('active');
+
+            // Add active class to the clicked button
+            button.classList.add('active');
+        }
+
+        slowBtn.addEventListener('click', () => {
+            ball.style.animationDuration = slowSpeed + 'ms';
+            setActiveButton(slowBtn);
+            moveBall();
+        });
+
+        mediumBtn.addEventListener('click', () => {
+            ball.style.animationDuration = mediumSpeed + 'ms';
+            setActiveButton(mediumBtn);
+            moveBall();
+        });
+
+        fastBtn.addEventListener('click', () => {
+            ball.style.animationDuration = fastSpeed + 'ms';
+            setActiveButton(fastBtn);
+            moveBall();
+        });
+
+        randomBtn.addEventListener('click', () => {
+            const speeds = [slowSpeed, mediumSpeed, fastSpeed];
+            const randomSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+            ball.style.animationDuration = randomSpeed + 'ms';
+            setActiveButton(randomBtn);
+            moveBall();
+        });
+
+        // Call the moveBall function initially to set the ball's position
+        moveBall();
+    </script>
+</body>
+
+</html>
